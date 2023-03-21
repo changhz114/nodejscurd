@@ -4,7 +4,7 @@ const typeDefs = gql`
   type Fruit {
     id: ID!
     name: String!
-    description: String!
+    description: String
     amount: Int!
   }
 
@@ -14,8 +14,8 @@ const typeDefs = gql`
   }
 
   type Mutation {
-    createFruit(name: String!, email: String!, age: Int): Fruit
-    updateFruit(id: ID!, name: String, email: String, age: Int): Fruit
+    createFruit(name: String!, description: String!, amount: Int): Fruit
+    updateFruit(id: ID!, name: String, description: String, amount: Int): Fruit
     deleteFruit(id: ID!): Fruit
   }
 `;
