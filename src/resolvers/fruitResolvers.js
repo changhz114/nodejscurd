@@ -153,7 +153,7 @@ const fruitResolvers = {
             return updatedFruit;
           } else {
             const outboxEvent = new OutboxEvent({
-              eventName: 'fruit.updated',
+              eventName: 'fruit.stored',
               eventData: updatedFruit,
             });
             await outboxEvent.save({ session });
@@ -210,6 +210,10 @@ const fruitResolvers = {
         )
         if (fruit) {
           fruit.fail = false;
+          const outboxEvent = new OutboxEvent({
+            eventName: 'fruit.updated',
+            eventData: fruit,
+          });
         }
         if (!fruit) {
           fruit = {
@@ -224,13 +228,8 @@ const fruitResolvers = {
             message: 'No that kind of fruit'
           };
         }
-        const outboxEvent = new OutboxEvent({
-          eventName: 'fruit.updateFail',
-          eventData: fruit,
-        });
-        await outboxEvent.save({ session });
-
         await session.commitTransaction();
+        await outboxEvent.save({ session });
         return fruit;
       } catch (error) {
         console.log(error.message);
@@ -270,10 +269,10 @@ const fruitResolvers = {
               eventName: 'fruit.removed',
               eventData: updatedFruit,
             });
-            await outboxEvent.save({ session });
             updatedFruit.fail = false;
             updatedFruit.message = "Succes removed" + " " + amount + " " + fruit.name;
             await session.commitTransaction();
+            await outboxEvent.save({ session });
             return updatedFruit;
           }
         } else {
