@@ -32,16 +32,16 @@ const fruitResolvers = {
       session.startTransaction();
       try {
         const fruit = await Fruit.findOne({ name: name }).session(session);
-        if(!fruit){
+        if (!fruit) {
           await session.commitTransaction();
           return {
-            message:"No such fruit",
-            fail:true,
-            id:"None",
-            name:"None",
-            description:"None",
-            amount:0,
-            limit:0,
+            message: "No such fruit",
+            fail: true,
+            id: "None",
+            name: "None",
+            description: "None",
+            amount: 0,
+            limit: 0,
           }
         }
         fruit.fail = false;
@@ -55,7 +55,7 @@ const fruitResolvers = {
         await session.commitTransaction();
         return fruit;
       } catch (error) {
-        console.log(error.message);
+        // console.log(error.message);
         await session.abortTransaction();
         throw error;
       } finally {
@@ -70,7 +70,7 @@ const fruitResolvers = {
       session.startTransaction();
       try {
         description = description.trim();
-        if (description.length>30) {
+        if (description.length > 30) {
           const newFruit = {
             id: "None",
             name: 'None',
@@ -90,21 +90,21 @@ const fruitResolvers = {
         await fruit.save({ session });
         const outboxEvent = new OutboxEvent({
           eventName: 'fruit.created',
+          eventData: fruit,
         });
-        await outboxEvent.save({ session });
         let newFruit = JSON.parse(JSON.stringify(fruit));
-        newFruit.id=JSON.stringify(fruit._id);
-        outboxEvent.eventData = newFruit;
+        newFruit.id = JSON.stringify(fruit._id);
+        await outboxEvent.save({ session });
         await session.commitTransaction();
         newFruit.fail = false;
         newFruit.message = "Successfully added";
         return newFruit;
       } catch (error) {
-        console.log(error.message);
+        // console.log(error.message);
         await session.abortTransaction();
         // Check for duplicate key error
         if (error.code === 11000) {
-          console.log(131);
+          // console.log(131);
           const newFruit = {
             id: "None",
             name: 'None',
@@ -116,9 +116,9 @@ const fruitResolvers = {
             fail: true,
             message: 'duplicate names!'
           };
-          console.log(3);
-          console.log(newFruit);
-          console.log(377);
+          // console.log(3);
+          // console.log(newFruit);
+          // console.log(377);
           return newFruit;
         }
         throw error;
@@ -214,6 +214,10 @@ const fruitResolvers = {
             eventName: 'fruit.updated',
             eventData: fruit,
           });
+          // console.log(1);
+          await outboxEvent.save({ session });
+          // console.log(2);
+
         }
         if (!fruit) {
           fruit = {
@@ -229,10 +233,10 @@ const fruitResolvers = {
           };
         }
         await session.commitTransaction();
-        await outboxEvent.save({ session });
+
         return fruit;
       } catch (error) {
-        console.log(error.message);
+        // console.log(error.message);
         await session.abortTransaction();
         throw error;
       } finally {
@@ -306,12 +310,15 @@ const fruitResolvers = {
           if (forceDelete || fruit.amount == 0) {
             let updatedFruit = JSON.parse(JSON.stringify(fruit));;
             await Fruit.findOneAndDelete({ name }).session(session);
-            await session.commitTransaction();
             const outboxEvent = new OutboxEvent({
               eventName: 'fruit.deleted',
-              eventData: updatedFruit,
+              eventData: fruit,
             });
-            await outboxEvent.save({ session });
+            try {
+              await outboxEvent.save({ session });
+            }catch(e){
+              // console.log(e.message);
+            }
             updatedFruit.fail = false;
             updatedFruit.message = forceDelete ? "force deleted fruit" : "Successfully deleted fruit with amount = 0";
             return updatedFruit;
