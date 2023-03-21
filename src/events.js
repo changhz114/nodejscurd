@@ -6,16 +6,16 @@ class MyEmitter extends EventEmitter {}
 const myEmitter = new MyEmitter();
 
 // Add your event listeners here, e.g.:
-myEmitter.on('user.created', async (user) => {
-  console.log('User created:', user);
+myEmitter.on('user.created', async (fruit) => {
+  console.log('User created:', fruit);
 });
 
-myEmitter.on('user.updated', async (user) => {
-  console.log('User updated:', user);
+myEmitter.on('user.updated', async (fruit) => {
+  console.log('User updated:', fruit);
 });
 
-myEmitter.on('user.deleted', async (user) => {
-  console.log('User deleted:', user);
+myEmitter.on('user.deleted', async (fruit) => {
+  console.log('User deleted:', fruit);
 });
 
 // Process events from the outbox collection

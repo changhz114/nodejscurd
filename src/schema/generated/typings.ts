@@ -31,7 +31,10 @@ export interface NexusGenObjects {
   Fruit: { // root type
     amount: number; // Int!
     description?: string | null; // String
+    fail: boolean; // Boolean!
     id: string; // ID!
+    limit: number; // Int!
+    message?: string | null; // String
     name: string; // String!
   }
   Mutation: {};
@@ -52,13 +55,18 @@ export interface NexusGenFieldTypes {
   Fruit: { // field return type
     amount: number; // Int!
     description: string | null; // String
+    fail: boolean; // Boolean!
     id: string; // ID!
+    limit: number; // Int!
+    message: string | null; // String
     name: string; // String!
   }
   Mutation: { // field return type
-    createFruit: NexusGenRootTypes['Fruit'] | null; // Fruit
-    deleteFruit: NexusGenRootTypes['Fruit'] | null; // Fruit
-    updateFruit: NexusGenRootTypes['Fruit'] | null; // Fruit
+    createFruitForFruitStorage: NexusGenRootTypes['Fruit'] | null; // Fruit
+    deleteFruitFromFruitStorage: NexusGenRootTypes['Fruit'] | null; // Fruit
+    removeFruitFromFruitStorage: NexusGenRootTypes['Fruit'] | null; // Fruit
+    storeFruitToFruitStorage: NexusGenRootTypes['Fruit'] | null; // Fruit
+    updateFruitForFruitStorage: NexusGenRootTypes['Fruit'] | null; // Fruit
   }
   Query: { // field return type
     findFruit: NexusGenRootTypes['Fruit'] | null; // Fruit
@@ -71,13 +79,18 @@ export interface NexusGenFieldTypeNames {
   Fruit: { // field return type name
     amount: 'Int'
     description: 'String'
+    fail: 'Boolean'
     id: 'ID'
+    limit: 'Int'
+    message: 'String'
     name: 'String'
   }
   Mutation: { // field return type name
-    createFruit: 'Fruit'
-    deleteFruit: 'Fruit'
-    updateFruit: 'Fruit'
+    createFruitForFruitStorage: 'Fruit'
+    deleteFruitFromFruitStorage: 'Fruit'
+    removeFruitFromFruitStorage: 'Fruit'
+    storeFruitToFruitStorage: 'Fruit'
+    updateFruitForFruitStorage: 'Fruit'
   }
   Query: { // field return type name
     findFruit: 'Fruit'
@@ -88,18 +101,26 @@ export interface NexusGenFieldTypeNames {
 
 export interface NexusGenArgTypes {
   Mutation: {
-    createFruit: { // args
-      amount?: number | null; // Int
+    createFruitForFruitStorage: { // args
       description?: string | null; // String
+      limit?: number | null; // Int
       name?: string | null; // String
     }
-    deleteFruit: { // args
-      id?: string | null; // ID
+    deleteFruitFromFruitStorage: { // args
+      forceDelete?: boolean | null; // Boolean
+      name?: string | null; // String
     }
-    updateFruit: { // args
+    removeFruitFromFruitStorage: { // args
       amount?: number | null; // Int
+      name?: string | null; // String
+    }
+    storeFruitToFruitStorage: { // args
+      amount?: number | null; // Int
+      name?: string | null; // String
+    }
+    updateFruitForFruitStorage: { // args
       description?: string | null; // String
-      id?: string | null; // ID
+      limit?: number | null; // Int
       name?: string | null; // String
     }
   }

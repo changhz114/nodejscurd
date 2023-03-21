@@ -7,7 +7,7 @@ const outboxEventSchema = new mongoose.Schema({
   },
   eventData: {
     type: Object,
-    required: true,
+    required: false,
   },
   createdAt: {
     type: Date,

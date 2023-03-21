@@ -5,14 +5,19 @@
 type Fruit {
   amount: Int!
   description: String
+  fail: Boolean!
   id: ID!
+  limit: Int!
+  message: String
   name: String!
 }
 
 type Mutation {
-  createFruit(amount: Int, description: String, name: String): Fruit
-  deleteFruit(id: ID): Fruit
-  updateFruit(amount: Int, description: String, id: ID, name: String): Fruit
+  createFruitForFruitStorage(description: String, limit: Int, name: String): Fruit
+  deleteFruitFromFruitStorage(forceDelete: Boolean, name: String): Fruit
+  removeFruitFromFruitStorage(amount: Int, name: String): Fruit
+  storeFruitToFruitStorage(amount: Int, name: String): Fruit
+  updateFruitForFruitStorage(description: String, limit: Int, name: String): Fruit
 }
 
 type Query {

@@ -1,4 +1,4 @@
-const { makeSchema, objectType, queryType, mutationType } = require('nexus');
+const { makeSchema, objectType, queryType, mutationType,unionType } = require('nexus');
 
 const Fruit = objectType({
   name: 'Fruit',
@@ -7,8 +7,12 @@ const Fruit = objectType({
     t.nonNull.string('name');
     t.string('description');
     t.nonNull.int('amount');
+    t.nonNull.int('limit');
+    t.string('message');
+    t.nonNull.boolean('fail');
   },
 });
+
 
 const Query = queryType({
   definition(t) {
@@ -28,32 +32,48 @@ const Query = queryType({
 
 const Mutation = mutationType({
   definition(t) {
-    t.field('createFruit', {
+    t.field('createFruitForFruitStorage', {
       type: 'Fruit',
       args: {
         name: 'String',
         description: 'String',
-        amount: 'Int',
+        limit: 'Int',
       },
     });
-    t.field('updateFruit', {
+    t.field('updateFruitForFruitStorage', {
       type: 'Fruit',
       args: {
-        id: 'ID',
         name: 'String',
         description: 'String',
+        limit: 'Int',
+      },
+    });
+    t.field('storeFruitToFruitStorage', {
+      type: 'Fruit',
+      args: {
+        name: 'String',
         amount: 'Int',
       },
     });
-    t.field('deleteFruit', {
+    t.field('removeFruitFromFruitStorage', {
       type: 'Fruit',
-      args: { id: 'ID' },
+      args: { 
+        name: 'String' ,
+        amount: 'Int',        
+      },
+    });
+    t.field('deleteFruitFromFruitStorage', {
+      type: 'Fruit',
+      args: { 
+        name: 'String' ,
+        forceDelete: 'Boolean',        
+      },
     });
   },
 });
 
  const typeDefs = makeSchema({
-  types: [Fruit, Query, Mutation],
+  types: [Fruit,  Query, Mutation],
   outputs: {
     schema: __dirname + '/generated/schema.graphql',
     typegen: __dirname + '/generated/typings.ts',

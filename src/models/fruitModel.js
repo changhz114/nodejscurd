@@ -10,9 +10,14 @@ const fruitSchema = new mongoose.Schema({
   description: {
     type: String,
     required: true,
-    maxlength: 30, // Limit email length to a maximum of 50 characters
+    maxlength: 30, 
   },
   amount: {
+    type: Number,
+    required: true,
+    default:0,
+  },
+  limit: {
     type: Number,
     required: true,
   },
