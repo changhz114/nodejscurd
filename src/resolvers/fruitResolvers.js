@@ -6,38 +6,81 @@ const myEmitter = require('../events');
 const fruitResolvers = {
   Query: {
     fruits: () => Fruit.find(),
-    fruit: (_, { id }) => Fruit.findById(id),
+    getFruit: async (_, { id }) => {
+      const session = await mongoose.startSession();
+      session.startTransaction();
+      try {
+        const fruit = await Fruit.findById(id).session(session);
+
+        const outboxEvent = new OutboxEvent({
+          eventName: 'fruit.retrieved',
+          eventData: fruit,
+        });
+        await outboxEvent.save({ session });
+
+        await session.commitTransaction();
+        return fruit;
+      } catch (error) {
+        await session.abortTransaction();
+        throw error;
+      } finally {
+        session.endSession();
+      }
+    },
+    findFruit: async (_, { name }) => {
+      const session = await mongoose.startSession();
+      session.startTransaction();
+      try {
+        const fruit = await Fruit.findOne({ name: name }).session(session);
+
+        const outboxEvent = new OutboxEvent({
+          eventName: 'fruit.found',
+          eventData: fruit,
+        });
+        await outboxEvent.save({ session });
+
+        await session.commitTransaction();
+        return fruit;
+      } catch (error) {
+        console.log(error.message);
+        await session.abortTransaction();
+        throw error;
+      } finally {
+        session.endSession();
+      }
+    },
+
   },
   Mutation: {
     createFruit: async (_, { name, description, amount }) => {
-        const session = await mongoose.startSession();
-        session.startTransaction();
-        try {
-          const fruit = new Fruit({ name, description, amount });
-          await fruit.save({ session });
-      
-          const outboxEvent = new OutboxEvent({
-            eventName: 'fruit.created',
-            eventData: fruit,
-          });
-          await outboxEvent.save({ session });
-      
-          await session.commitTransaction();
-          return fruit;
-        } catch (error) {
-          await session.abortTransaction();
-      
-          // Check for duplicate key error
-          if (error.code === 11000) {
-            throw new Error('Fruit with the provided name already exists');
-          }
-      
-          throw error;
-        } finally {
-          session.endSession();
+      const session = await mongoose.startSession();
+      session.startTransaction();
+      try {
+        const fruit = new Fruit({ name, description, amount });
+        await fruit.save({ session });
+
+        const outboxEvent = new OutboxEvent({
+          eventName: 'fruit.created',
+          eventData: fruit,
+        });
+        await outboxEvent.save({ session });
+
+        await session.commitTransaction();
+        return fruit;
+      } catch (error) {
+        await session.abortTransaction();
+
+        // Check for duplicate key error
+        if (error.code === 11000) {
+          throw new Error('Fruit with the provided name already exists');
         }
-      },
-      
+
+        throw error;
+      } finally {
+        session.endSession();
+      }
+    },
+
     updateFruit: async (_, { id, name, description, amount }) => {
       const session = await mongoose.startSession();
       session.startTransaction();

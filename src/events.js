@@ -28,7 +28,7 @@ const processOutboxEvents = async () => {
       await OutboxEvent.findByIdAndDelete(event._id);
     }
   } catch (error) {
-    console.error('Error processing outbox events:', error);
+    console.log('Error processing outbox events:', error);
   }
 };
 

@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-const userSchema = new mongoose.Schema({
+const fruitSchema = new mongoose.Schema({
   name: {
     type: String,
     required: true,
@@ -22,8 +22,8 @@ const userSchema = new mongoose.Schema({
   },
 });
 
-userSchema.index({ name: 1 }); // Add an index on the name field
+fruitSchema.index({ name: 1 }); // Add an index on the name field
 
-const Fruit = mongoose.model('Fruit', userSchema);
+const Fruit = mongoose.model('Fruit', fruitSchema);
 
 module.exports = Fruit;
