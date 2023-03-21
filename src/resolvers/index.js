@@ -1,11 +1,11 @@
-const userResolvers = require('./userResolvers');
+const fruitResolvers = require('./fruitResolvers');
 
 const resolvers = {
   Query: {
-    ...userResolvers.Query,
+    ...fruitResolvers.Query,
   },
   Mutation: {
-    ...userResolvers.Mutation,
+    ...fruitResolvers.Mutation,
   },
 };
 
